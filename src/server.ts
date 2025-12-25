@@ -1,51 +1,52 @@
 import http, { IncomingMessage, Server, ServerResponse } from "http"
 import config from "./config/config";
-
+import { RouteHandeler, routes } from "./helpers/RouteHandel";
+import "./router"
 
 const server: Server = http.createServer((req: IncomingMessage, res: ServerResponse) => {
     console.log("Server is runing...");
-
-    if (req.url == "/" && req.method == "GET") {
-        res.writeHead(200, { 'content-type': 'applacation/json' });
+    const method = req.method?.toUpperCase() || "";
+    const path = req.url || "";
+    const MethodMap = routes.get(method);
+    const handler: RouteHandeler | undefined = MethodMap?.get(path);
+    if (handler) {
+        handler(req, res)
+    } else {
+        res.writeHead(404, { 'content-type': 'applacation/json' });
         res.end(JSON.stringify({
-            message: "Hell node.js",
-            path: req.url,
-        }))
-    };
-
-    if (req.url == "/api" && req.method == "GET") {
-        res.writeHead(200, { 'content-type': 'applacation/json' });
-        res.end(JSON.stringify({
-            message: "Your Api is Ready",
-            path: req.url,
+            sucess: false,
+            message: "Route not found",
+            path,
         }))
     }
 
-    if (req.url == "/user" && req.method == "POST") {
-
-        // const user = {
-        //     id: 12,
-        //     name: "abc"
-        // }
-        // res.writeHead(200, { 'content-type': 'applacation/json' })
-        // res.end(JSON.stringify(user))
-
-        let body = ''
+    // if (req.url == "/" && req.method == "GET") {
+    //     res.writeHead(200, { 'content-type': 'applacation/json' });
+    //     res.end(JSON.stringify({
+    //         message: "Hell node.js",
+    //         path: req.url,
+    //     }))
+    // };
 
 
-        req.on("data", (chunk) => {
-            body += chunk.toString()
-        });
-        req.on("end", () => {
-            const parseBody = JSON.parse(body)
-            console.log(parseBody)
-        });
+    // if (req.url == "/api" && req.method == "GET") {
+    //     res.writeHead(200, { 'content-type': 'applacation/json' });
+    //     res.end(JSON.stringify({
+    //         message: "Your Api is Ready",
+    //         path: req.url,
+    //     }))
+    // }
 
-        res.end(JSON.stringify({
-            message: "Data send..."
-        }))
+    // if (req.url == "/user" && req.method == "POST") {
 
-    }
+    //     // const user = {
+    //     //     id: 12,
+    //     //     name: "abc"
+    //     // }
+    //     // res.writeHead(200, { 'content-type': 'applacation/json' })
+    //     // res.end(JSON.stringify(user))
+
+   
 });
 
 

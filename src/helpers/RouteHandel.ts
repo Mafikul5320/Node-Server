@@ -1,7 +1,7 @@
 import { IncomingMessage, ServerResponse } from "http";
 
-type RouteHandeler = (req: IncomingMessage, res: ServerResponse) => void;
-const routes: Map<string, Map<string, RouteHandeler>> = new Map()
+export type RouteHandeler = (req: IncomingMessage, res: ServerResponse) => void;
+export const routes: Map<string, Map<string, RouteHandeler>> = new Map()
 
 
 function addRoutes(method: string, path: string, handler: RouteHandeler) {
